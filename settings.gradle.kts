@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "ISX Catalog Viewer"
 include(":app")
- 
+include(":app:core:data")
+include(":app:core:domain")
+include(":app:core:navigation")
