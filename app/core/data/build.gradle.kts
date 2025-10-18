@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.datastore)
     kapt(libs.hilt.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.test.mockk)
