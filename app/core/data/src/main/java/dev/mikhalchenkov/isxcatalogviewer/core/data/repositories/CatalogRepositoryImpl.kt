@@ -6,8 +6,9 @@ import dev.mikhalchenkov.isxcatalogviewer.domain.entities.CatalogItem
 import dev.mikhalchenkov.isxcatalogviewer.domain.repositories.CatalogRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class CatalogRepositoryImpl constructor(
+class CatalogRepositoryImpl @Inject constructor(
     private val catalogDataSource: CatalogDataSource
 ) : CatalogRepository {
     override suspend fun getAll(): Flow<Result<List<CatalogItem>>> = flow {
