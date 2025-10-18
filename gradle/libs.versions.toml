@@ -15,7 +15,8 @@ kotlinx-coroutines = "1.10.2"
 test-mockk = "1.14.6"
 hilt = "2.57.2"
 androidx-datastore = "1.1.7"
-nav-compose = "2.11.3"
+nav-compose = "2.9.5"
+uiTooling = "1.9.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,7 @@ hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", 
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "nav-compose" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

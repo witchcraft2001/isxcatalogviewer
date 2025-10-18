@@ -6,8 +6,11 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.mikhalchenkov.isxcatalogviewer.core.common.di.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,7 +18,8 @@ private val Context.dataStore by preferencesDataStore(name = "catalog_preference
 
 @Singleton
 class FavoritesDataSource @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) {
 
     companion object {
@@ -27,12 +31,14 @@ class FavoritesDataSource @Inject constructor(
         get() = context.dataStore.data.map { it[KEY] ?: emptySet() }
 
     suspend fun toggle(id: String) {
-        context.dataStore.edit { preferences ->
-            val current = preferences[KEY] ?: emptySet()
-            if (current.contains(id)) {
-                preferences[KEY] = current - id
-            } else {
-                preferences[KEY] = current + id
+        withContext(dispatcher) {
+            context.dataStore.edit { preferences ->
+                val current = preferences[KEY] ?: emptySet()
+                if (current.contains(id)) {
+                    preferences[KEY] = current - id
+                } else {
+                    preferences[KEY] = current + id
+                }
             }
         }
     }

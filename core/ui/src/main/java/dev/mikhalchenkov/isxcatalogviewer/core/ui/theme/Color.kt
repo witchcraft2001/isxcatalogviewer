@@ -1,4 +1,4 @@
-package dev.mikhalchenkov.isxcatalogviewer.ui.theme
+package dev.mikhalchenkov.isxcatalogviewer.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -11,7 +11,7 @@ import javax.inject.Inject
 class CatalogRepositoryImpl @Inject constructor(
     private val catalogDataSource: CatalogDataSource
 ) : CatalogRepository {
-    override suspend fun getAll(): Flow<Result<List<CatalogItem>>> = flow {
+    override fun getAll(): Flow<Result<List<CatalogItem>>> = flow {
         try {
             emit(Result.success(catalogDataSource.getCatalog().items.map { it.toDomain() }))
         } catch (e: Exception) {

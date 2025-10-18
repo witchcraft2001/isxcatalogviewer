@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import dev.mikhalchenkov.isxcatalogviewer.core.ui.theme.ISXCatalogViewerTheme
 import dev.mikhalchenkov.isxcatalogviewer.ui.theme.ISXCatalogViewerTheme
 
 class MainActivity : ComponentActivity() {
