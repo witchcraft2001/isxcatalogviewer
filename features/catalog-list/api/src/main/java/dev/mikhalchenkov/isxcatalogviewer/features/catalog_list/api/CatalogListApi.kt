@@ -1,5 +1,10 @@
 package dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.api
 
+import androidx.compose.runtime.Composable
+
 interface CatalogListApi {
-    val startRoute: String get() = "catalog/list"
+    @Composable
+    fun ScreenEntryPoint(
+        onOpenDetails: (String) -> Unit,
+    )
 }

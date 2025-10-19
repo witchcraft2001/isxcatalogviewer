@@ -1,13 +1,16 @@
 package dev.mikhalchenkov.isxcatalogviewer.core.data.datasources
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.mikhalchenkov.isxcatalogviewer.core.data.models.CatalogResponseDto
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CatalogDataSource @Inject constructor(private val context: Context) {
+class CatalogDataSource @Inject constructor(
+    @ApplicationContext private val context: Context,
+) {
     companion object {
         private const val CATALOG_FILE_NAME = "catalog.json"
     }

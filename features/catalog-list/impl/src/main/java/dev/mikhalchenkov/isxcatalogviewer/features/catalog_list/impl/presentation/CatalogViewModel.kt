@@ -44,14 +44,15 @@ internal class CatalogViewModel @Inject constructor(
                         _state.value = CatalogViewState.Show(filtered.map { it.toUi() }, query)
                     },
                     onFailure = { throwable ->
-                        _state.value = CatalogViewState.Error(throwable.message)
+                        _state.value = CatalogViewState.Error()
                     }
                 )
-            }.stateIn(viewModelScope, SharingStarted.Lazily, Unit)
+            }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
         }
     }
 
     fun loadCatalog() {
+        _state.value = CatalogViewState.Loading
         viewModelScope.launch {
             getCatalogItemsUseCase().collect { result ->
                 catalogResult.value = result

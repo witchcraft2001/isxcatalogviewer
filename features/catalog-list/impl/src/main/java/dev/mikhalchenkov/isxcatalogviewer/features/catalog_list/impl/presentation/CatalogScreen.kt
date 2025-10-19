@@ -1,21 +1,25 @@
 package dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import dev.mikhalchenkov.isxcatalogviewer.core.ui.ErrorMessage
+import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.R
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.compose.CatalogContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogScreen(
     state: CatalogViewState,
+    onReloadClicked: () -> Unit,
     onQueryChanged: (String) -> Unit,
     onToggleFavorite: (String) -> Unit,
     onOpenDetails: (String) -> Unit,
@@ -26,11 +30,19 @@ fun CatalogScreen(
 
             when (state) {
                 is CatalogViewState.Loading -> {
-                    // Show loading indicator
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator()
+                    }
                 }
 
                 is CatalogViewState.Error -> {
-                    // Show error message
+                    ErrorMessage(
+                        message = state.message ?: stringResource(R.string.unspecified_error_message),
+                        onRetryClicked = onReloadClicked,
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize()
+                    )
                 }
 
                 is CatalogViewState.Show -> {
