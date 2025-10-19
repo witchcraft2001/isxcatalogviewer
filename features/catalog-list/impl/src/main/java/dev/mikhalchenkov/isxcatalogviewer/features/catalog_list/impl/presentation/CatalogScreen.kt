@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.ErrorMessage
-import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.R
+import dev.mikhalchenkov.isxcatalogviewer.core.ui.R as CoreUiR
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.compose.CatalogContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,8 +29,8 @@ internal fun CatalogScreen(
 
         is CatalogViewState.Error -> {
             ErrorMessage(
-                message = state.message ?: stringResource(R.string.unspecified_error_message),
-                onRetryClicked = onReloadClicked,
+                message = state.message ?: stringResource(CoreUiR.string.unspecified_error_message),
+                onButtonClicked = onReloadClicked,
                 modifier = Modifier
                     .fillMaxSize()
             )

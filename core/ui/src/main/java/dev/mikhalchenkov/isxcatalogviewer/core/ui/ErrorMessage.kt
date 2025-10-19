@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.theme.ISXCatalogViewerTheme
@@ -17,8 +18,9 @@ import dev.mikhalchenkov.isxcatalogviewer.core.ui.theme.ISXCatalogViewerTheme
 @Composable
 fun ErrorMessage(
     message: String,
-    onRetryClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    onButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+    buttonText: String? = null,
 ) {
     Column(
         modifier = modifier,
@@ -27,8 +29,8 @@ fun ErrorMessage(
     ) {
         Text(text = message, style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetryClicked) {
-            Text(text = "Retry")
+        Button(onClick = onButtonClicked) {
+            Text(text = buttonText ?: stringResource(R.string.retry_btn))
         }
     }
 }
@@ -39,7 +41,7 @@ private fun ErrorMessagePreview() {
     ISXCatalogViewerTheme {
         ErrorMessage(
             message = "An error occurred",
-            onRetryClicked = {}
+            onButtonClicked = {}
         )
     }
 }

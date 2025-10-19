@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.FavoriteIcon
+import dev.mikhalchenkov.isxcatalogviewer.core.ui.Rating
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.theme.ISXCatalogViewerTheme
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.CatalogItemUi
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.CatalogViewState
@@ -121,25 +122,6 @@ private fun CatalogItem(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun Rating(
-    rating: String,
-    modifier: Modifier = Modifier,
-) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Image(
-            painter = painterResource(CoreUiR.drawable.ic_star),
-            contentDescription = null,
-            modifier = modifier.size(16.dp),
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = rating,
-            style = MaterialTheme.typography.bodyMedium,
-        )
     }
 }
 

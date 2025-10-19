@@ -16,8 +16,8 @@ class CatalogDetailsImpl @Inject constructor() : CatalogDetailsApi {
         onCloseDetails: () -> Unit
     ) {
         val viewModel = hiltViewModel<CatalogDetailsViewModel>()
-        LaunchedEffect(Unit) {
-            viewModel.loadItem()
+        LaunchedEffect(id) {
+            viewModel.loadItem(id)
         }
         CatalogDetailsScreen(
             state = viewModel.state.collectAsState().value,
