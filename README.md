@@ -5,8 +5,8 @@ An Android application for viewing and managing catalog items with favorites fun
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/Screenshot_1.png" width="300" alt="Catalog List View"/>
-  <img src="screenshots/Screenshot_2.png" width="300" alt="Catalog Details View"/>
+  <img src="screenshots/Screenshot_1.png" alt="Catalog List View"/>
+  <img src="screenshots/Screenshot_2.png" alt="Catalog Details View"/>
 </p>
 
 ## Tech Stack
