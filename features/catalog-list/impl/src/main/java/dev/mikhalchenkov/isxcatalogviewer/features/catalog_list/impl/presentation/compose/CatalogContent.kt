@@ -31,7 +31,7 @@ import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentatio
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.R as CoreUiR
 
 @Composable
-fun CatalogContent(
+internal fun CatalogContent(
     state: CatalogViewState.Show,
     onQueryChanged: (String) -> Unit,
     onToggleFavorite: (String) -> Unit,
@@ -70,7 +70,7 @@ fun CatalogContent(
 }
 
 @Composable
-fun CatalogItem(
+private fun CatalogItem(
     modifier: Modifier = Modifier,
     onToggleFavorite: (String) -> Unit,
     onOpenDetails: (String) -> Unit,
