@@ -9,13 +9,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.theme.ISXCatalogViewerTheme
-import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.api.CatalogListApi
+import dev.mikhalchenkov.isxcatalogviewer.features.home_screen.HomeApi
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var catalogFeature: CatalogListApi
+    lateinit var homeFeature: HomeApi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ISXCatalogViewerTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    catalogFeature.ScreenEntryPoint(
-                        onOpenDetails = { /* TODO */ },
-                    )
+                    homeFeature.ScreenEntryPoint()
                 }
             }
         }
