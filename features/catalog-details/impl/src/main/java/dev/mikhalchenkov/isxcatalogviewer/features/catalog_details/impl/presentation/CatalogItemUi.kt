@@ -1,4 +1,4 @@
-package dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation
+package dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.presentation
 
 internal data class CatalogItemUi(
     val id: String,

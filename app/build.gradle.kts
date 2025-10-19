@@ -68,6 +68,8 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":features:catalog-list:api"))
     implementation(project(":features:catalog-list:impl"))
+    implementation(project(":features:catalog-details:api"))
+    implementation(project(":features:catalog-details:impl"))
     implementation(project(":features:home:api"))
     implementation(project(":features:home:impl"))
 }

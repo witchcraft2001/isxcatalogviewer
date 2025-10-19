@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.mikhalchenkov.isxcatalogviewer.features.home.impl"
+    namespace = "dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl"
     compileSdk = 36
 
     compileOptions {
@@ -25,20 +25,22 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
     kapt(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.junit)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(project(":features:catalog-list:api"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:ui"))
     implementation(project(":features:catalog-details:api"))
-    implementation(project(":features:home:api"))
+    testImplementation(libs.junit)
+    testImplementation(libs.test.mockk)
+    testImplementation(libs.test.coroutines)
 }
