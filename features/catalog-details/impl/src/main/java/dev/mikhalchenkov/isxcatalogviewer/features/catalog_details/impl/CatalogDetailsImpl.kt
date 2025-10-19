@@ -22,6 +22,7 @@ class CatalogDetailsImpl @Inject constructor() : CatalogDetailsApi {
         CatalogDetailsScreen(
             state = viewModel.state.collectAsState().value,
             onCloseClicked = onCloseDetails,
+            onToggleFavorite = viewModel::onToggleFavorite,
         )
     }
 }

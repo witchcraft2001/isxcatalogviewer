@@ -28,7 +28,8 @@ import dev.mikhalchenkov.isxcatalogviewer.core.ui.R as CoreUiR
 @Composable
 internal fun CatalogDetailsScreen(
     state: CatalogDetailsState,
-    onCloseClicked: () -> Unit
+    onCloseClicked: () -> Unit,
+    onToggleFavorite: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(16.dp),
@@ -77,6 +78,7 @@ internal fun CatalogDetailsScreen(
 
                 is CatalogDetailsState.Show -> CatalogDetailsContentScreen(
                     state = state,
+                    onToggleFavorite = onToggleFavorite,
                 )
             }
         }

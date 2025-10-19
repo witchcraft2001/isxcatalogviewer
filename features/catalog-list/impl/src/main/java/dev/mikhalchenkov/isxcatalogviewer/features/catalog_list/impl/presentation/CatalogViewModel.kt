@@ -52,7 +52,6 @@ internal class CatalogViewModel @Inject constructor(
     }
 
     fun loadCatalog() {
-        _state.value = CatalogViewState.Loading
         viewModelScope.launch {
             getCatalogItemsUseCase().collect { result ->
                 catalogResult.value = result
