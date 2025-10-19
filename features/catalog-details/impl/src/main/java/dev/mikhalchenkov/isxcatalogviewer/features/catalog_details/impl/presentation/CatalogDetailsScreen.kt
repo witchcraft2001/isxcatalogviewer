@@ -58,29 +58,32 @@ internal fun CatalogDetailsScreen(
             )
         }
 
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center
-        ) {
-            when (state) {
-                is CatalogDetailsState.Loading -> CircularProgressIndicator()
-                is CatalogDetailsState.NotFound -> ErrorMessage(
-                    message = stringResource(R.string.item_not_found_message),
-                    buttonText = stringResource(R.string.close_btn),
-                    onButtonClicked = onCloseClicked,
-                )
-
-                is CatalogDetailsState.Error -> ErrorMessage(
-                    message = state.message
-                        ?: stringResource(CoreUiR.string.unspecified_error_message),
-                    onButtonClicked = onCloseClicked,
-                )
-
-                is CatalogDetailsState.Show -> CatalogDetailsContentScreen(
-                    state = state,
-                    onToggleFavorite = onToggleFavorite,
-                )
+        when (state) {
+            is CatalogDetailsState.Loading -> Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
+
+            is CatalogDetailsState.NotFound -> ErrorMessage(
+                message = stringResource(R.string.item_not_found_message),
+                buttonText = stringResource(R.string.close_btn),
+                onButtonClicked = onCloseClicked,
+                modifier = Modifier.weight(1f),
+            )
+
+            is CatalogDetailsState.Error -> ErrorMessage(
+                message = state.message
+                    ?: stringResource(CoreUiR.string.unspecified_error_message),
+                onButtonClicked = onCloseClicked,
+                modifier = Modifier.weight(1f),
+            )
+
+            is CatalogDetailsState.Show -> CatalogDetailsContentScreen(
+                state = state,
+                onToggleFavorite = onToggleFavorite,
+            )
         }
     }
 }

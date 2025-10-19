@@ -39,7 +39,6 @@ internal class CatalogDetailsViewModel @Inject constructor(
         }
     }
 
-
     fun onToggleFavorite(itemId: String) {
         viewModelScope.launch {
             try {
