@@ -32,7 +32,7 @@ internal class CatalogViewModel @Inject constructor(
     private val query = MutableStateFlow("")
 
     private val itemsAsync: StateFlow<AsyncResult<List<CatalogItemFavorite>>> =
-        getCatalogItemsUseCase(refresh)
+        getCatalogItemsUseCase(query, refresh)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AsyncResult.Loading)
 
     val state: StateFlow<CatalogViewState> =
@@ -40,11 +40,7 @@ internal class CatalogViewModel @Inject constructor(
             when (async) {
                 is AsyncResult.Loading -> CatalogViewState.Loading
                 is AsyncResult.Error -> CatalogViewState.Error(message = async.throwable.message)
-                is AsyncResult.Success -> {
-                    val filtered = if (q.isBlank()) async.value
-                    else async.value.filter { it.title.contains(q, ignoreCase = true) }
-                    CatalogViewState.Show(filtered.map { it.toUi() }, q)
-                }
+                is AsyncResult.Success -> CatalogViewState.Show(async.value.map { it.toUi() }, q)
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogViewState.Loading)
 

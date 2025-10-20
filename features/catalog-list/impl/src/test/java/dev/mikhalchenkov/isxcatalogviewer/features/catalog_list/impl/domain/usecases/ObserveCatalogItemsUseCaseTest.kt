@@ -26,6 +26,20 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveCatalogItemsUseCaseTest {
+    private val item1 = CatalogItem(
+        id = "bk_001",
+        title = "The Blue Fox",
+        category = "Fiction",
+        price = 12.99,
+        rating = 4.4,
+    )
+    private val item2 = CatalogItem(
+        id = "bk_002",
+        title = "Data Sketches",
+        category = "Non-Fiction",
+        price = 32.00,
+        rating = 4.8,
+    )
     private val catalogRepository = mockk<CatalogRepository>(relaxed = true)
     private val favoriteRepository = mockk<FavoriteRepository>(relaxed = true)
     private lateinit var useCase: ObserveCatalogItemsUseCase
@@ -44,32 +58,20 @@ class ObserveCatalogItemsUseCaseTest {
     fun `emits success with correct favorite flags`() = runTest {
         // given
         val items = listOf(
-            CatalogItem(
-                id = "bk_001",
-                title = "The Blue Fox",
-                category = "Fiction",
-                price = 12.99,
-                rating = 4.4,
-            ),
-            CatalogItem(
-                id = "bk_002",
-                title = "Data Sketches",
-                category = "Non-Fiction",
-                price = 32.00,
-                rating = 4.8,
-            ),
+            item1,
+            item2,
         )
-        val catalogFlow = MutableStateFlow(items)
+        val query = MutableStateFlow("")
         val favoritesFlow = MutableStateFlow(setOf("bk_002"))
         val refresh = MutableSharedFlow<Unit>()
 
-        every { catalogRepository.getAll() } returns catalogFlow
+        every { catalogRepository.search(any()) } returns flow { emit(items) }
         every { favoriteRepository.favoriteIds } returns favoritesFlow
 
         // when
         val emissions = mutableListOf<AsyncResult<List<CatalogItemFavorite>>>()
         val job = launch {
-            useCase(refresh).take(2).toList(emissions) // Loading + Success
+            useCase(query, refresh).take(2).toList(emissions)
         }
         runCurrent()
         job.join()
@@ -87,32 +89,21 @@ class ObserveCatalogItemsUseCaseTest {
     fun `updates favorites produce new emission with updated flags`() = runTest {
         // given
         val items = listOf(
-            CatalogItem(
-                id = "bk_001",
-                title = "The Blue Fox",
-                category = "Fiction",
-                price = 12.99,
-                rating = 4.4,
-            ),
-            CatalogItem(
-                id = "bk_002",
-                title = "Data Sketches",
-                category = "Non-Fiction",
-                price = 32.00,
-                rating = 4.8,
-            ),
+            item1,
+            item2,
         )
+        val query = MutableStateFlow("")
         val catalogFlow = MutableStateFlow(items)
         val favoritesFlow = MutableStateFlow(setOf("bk_001"))
         val refresh = MutableSharedFlow<Unit>()
 
-        every { catalogRepository.getAll() } returns catalogFlow
+        every { catalogRepository.search(any()) } returns catalogFlow
         every { favoriteRepository.favoriteIds } returns favoritesFlow
 
         // when
         val successes = mutableListOf<AsyncResult.Success<List<CatalogItemFavorite>>>()
         val job = launch {
-            useCase(refresh)
+            useCase(query, refresh, 0L)
                 .filterIsInstance<AsyncResult.Success<List<CatalogItemFavorite>>>()
                 .take(2)
                 .toList(successes)
@@ -137,14 +128,15 @@ class ObserveCatalogItemsUseCaseTest {
     fun `propagates failure from repository`() = runTest {
         // given
         val refresh = MutableSharedFlow<Unit>()
+        val query = MutableStateFlow("")
         val failure = IllegalStateException("boom")
-        every { catalogRepository.getAll() } returns flow { throw failure }
+        every { catalogRepository.search(any()) } returns flow { throw failure }
         every { favoriteRepository.favoriteIds } returns MutableStateFlow(emptySet())
 
         // when
         val emissions = mutableListOf<AsyncResult<List<CatalogItemFavorite>>>()
         val job = launch {
-            useCase(refresh).take(2).toList(emissions)
+            useCase(query, refresh, 0L).take(2).toList(emissions)
         }
         runCurrent()
         job.join()

@@ -4,6 +4,7 @@ import dev.mikhalchenkov.isxcatalogviewer.core.common.di.AsyncResult
 import dev.mikhalchenkov.isxcatalogviewer.domain.entities.CatalogItemFavorite
 import dev.mikhalchenkov.isxcatalogviewer.domain.usecases.ToggleFavoriteUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.domain.GetCatalogItemByIdUseCase
+import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.presentation.CatalogDetailEvent
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.presentation.CatalogDetailsState
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.presentation.CatalogDetailsViewModel
 import io.mockk.Runs
@@ -19,6 +20,8 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -188,6 +191,24 @@ internal class CatalogDetailsViewModelTest {
     }
 
     @Test
+    fun `onToggleFavorite should call toggleFavoriteUseCase and emit success message`() = runTest {
+        // Given
+        val itemId = "123"
+        coEvery { toggleFavoriteUseCase(itemId) } just Runs
+
+        // When
+        val eventDeferred = async { viewModel.events.first() }
+        viewModel.onToggleFavorite(itemId)
+        val event = eventDeferred.await()
+
+        // Then
+        coVerify(exactly = 1) { toggleFavoriteUseCase(itemId) }
+        assertFalse(viewModel.state.value is CatalogDetailsState.Error)
+        assertTrue(event is CatalogDetailEvent.ShowMessage)
+        assertTrue((event as CatalogDetailEvent.ShowMessage).text.contains("Favorite"))
+    }
+
+    @Test
     fun `onToggleFavorite should emit Error state when use case throws exception`() = runTest {
         // Given
         val itemId = "123"
@@ -195,11 +216,15 @@ internal class CatalogDetailsViewModelTest {
         coEvery { toggleFavoriteUseCase(itemId) } throws exception
 
         // When
+        val eventDeferred = async { viewModel.events.first() }
         viewModel.onToggleFavorite(itemId)
+        val event = eventDeferred.await()
         advanceUntilIdle()
 
         // Then
-        assertTrue(viewModel.state.value is CatalogDetailsState.Error)
+        assertFalse(viewModel.state.value is CatalogDetailsState.Error)
+        assertTrue(event is CatalogDetailEvent.ShowMessage)
+        assertTrue((event as CatalogDetailEvent.ShowMessage).text.contains("Failed"))
         coVerify(exactly = 1) { toggleFavoriteUseCase(itemId) }
     }
 
