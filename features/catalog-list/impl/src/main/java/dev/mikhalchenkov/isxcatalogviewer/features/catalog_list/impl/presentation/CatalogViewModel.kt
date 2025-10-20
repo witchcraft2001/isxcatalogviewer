@@ -13,8 +13,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -37,11 +35,11 @@ internal class CatalogViewModel @Inject constructor(
         getCatalogItemsUseCase(refresh)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AsyncResult.Loading)
 
-    private val state: StateFlow<CatalogViewState> =
+    val state: StateFlow<CatalogViewState> =
         combine(itemsAsync, query) { async, q ->
             when (async) {
                 is AsyncResult.Loading -> CatalogViewState.Loading
-                is AsyncResult.Error   -> CatalogViewState.Error(message = async.throwable.message)
+                is AsyncResult.Error -> CatalogViewState.Error(message = async.throwable.message)
                 is AsyncResult.Success -> {
                     val filtered = if (q.isBlank()) async.value
                     else async.value.filter { it.title.contains(q, ignoreCase = true) }
@@ -50,8 +48,8 @@ internal class CatalogViewModel @Inject constructor(
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogViewState.Loading)
 
-    private val _toastMessage = Channel<String?>(Channel.BUFFERED)
-    val toastMessage = _toastMessage.receiveAsFlow()
+    private val _events = Channel<UiEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     fun retry() {
         refresh.tryEmit(Unit)
@@ -67,7 +65,7 @@ internal class CatalogViewModel @Inject constructor(
                 toggleFavoriteUseCase(itemId)
             } catch (e: Exception) {
                 // todo: add ResourceManager to viewmodel to get string from resources
-                _toastMessage.send(e.message)
+                _events.send(UiEvent.ShowMessage(e.message ?: "Unable to update favorite status"))
             }
         }
     }

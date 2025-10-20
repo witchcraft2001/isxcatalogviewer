@@ -1,7 +1,6 @@
 package dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.api.CatalogListApi
@@ -15,15 +14,12 @@ class CatalogListImpl @Inject constructor() : CatalogListApi {
         onOpenDetails: (String) -> Unit,
     ) {
         val viewModel = hiltViewModel<CatalogViewModel>()
-        LaunchedEffect(Unit) {
-            viewModel.loadCatalog()
-        }
         CatalogScreen(
             state = viewModel.state.collectAsState().value,
             onQueryChanged = viewModel::onQueryChanged,
             onToggleFavorite = viewModel::onToggleFavorite,
             onOpenDetails = onOpenDetails,
-            onReloadClicked = viewModel::loadCatalog,
+            onReloadClicked = viewModel::retry,
         )
     }
 }

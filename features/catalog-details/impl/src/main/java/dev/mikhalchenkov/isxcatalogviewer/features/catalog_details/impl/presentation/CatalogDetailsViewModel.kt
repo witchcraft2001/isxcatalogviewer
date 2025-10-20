@@ -3,6 +3,7 @@ package dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.present
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.mikhalchenkov.isxcatalogviewer.core.common.di.AsyncResult
 import dev.mikhalchenkov.isxcatalogviewer.domain.usecases.ToggleFavoriteUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.domain.GetCatalogItemByIdUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.mappers.toUi
@@ -23,18 +24,22 @@ internal class CatalogDetailsViewModel @Inject constructor(
     fun loadItem(id: String) {
         viewModelScope.launch {
             getCatalogItemByIdUseCase(id).collect { result ->
-                _state.value = result.fold(
-                    onSuccess = { item ->
+                _state.value = when(result){
+                    is AsyncResult.Loading -> {
+                        CatalogDetailsState.Loading
+                    }
+                    is AsyncResult.Success -> {
+                        val item = result.value
                         if (item != null) {
                             CatalogDetailsState.Show(item.toUi())
                         } else {
                             CatalogDetailsState.NotFound
                         }
-                    },
-                    onFailure = { error ->
+                    }
+                    is AsyncResult.Error -> {
                         CatalogDetailsState.Error()
                     }
-                )
+                }
             }
         }
     }
