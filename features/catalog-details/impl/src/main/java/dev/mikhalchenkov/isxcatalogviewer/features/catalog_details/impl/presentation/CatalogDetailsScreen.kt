@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -60,7 +61,7 @@ internal fun CatalogDetailsScreen(
 
         when (state) {
             is CatalogDetailsState.Loading -> Box(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
@@ -70,14 +71,14 @@ internal fun CatalogDetailsScreen(
                 message = stringResource(R.string.item_not_found_message),
                 buttonText = stringResource(R.string.close_btn),
                 onButtonClicked = onCloseClicked,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxSize(),
             )
 
             is CatalogDetailsState.Error -> ErrorMessage(
                 message = state.message
                     ?: stringResource(CoreUiR.string.unspecified_error_message),
                 onButtonClicked = onCloseClicked,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxSize(),
             )
 
             is CatalogDetailsState.Show -> CatalogDetailsContentScreen(
