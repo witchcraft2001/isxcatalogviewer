@@ -3,8 +3,8 @@ package dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.LocalAppSnackbarHostState
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.api.CatalogDetailsApi
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.presentation.CatalogDetailEvent
@@ -34,7 +34,7 @@ class CatalogDetailsImpl @Inject constructor() : CatalogDetailsApi {
             }
         }
         CatalogDetailsScreen(
-            state = viewModel.state.collectAsState().value,
+            state = viewModel.state.collectAsStateWithLifecycle().value,
             onCloseClicked = onCloseDetails,
             onToggleFavorite = viewModel::onToggleFavorite,
         )

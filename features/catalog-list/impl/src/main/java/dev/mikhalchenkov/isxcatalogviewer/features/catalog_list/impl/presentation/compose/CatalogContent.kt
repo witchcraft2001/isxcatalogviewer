@@ -1,10 +1,8 @@
 package dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.compose
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,24 +29,16 @@ internal fun CatalogContent(
                 .fillMaxWidth()
         )
 
-        LazyColumn(
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(1f),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(
-                count = state.items.size,
-                key = { index -> state.items[index].id },
-                contentType = { index -> "catalog_item" },
-            ) {
-                CatalogItem(
-                    item = state.items[it],
-                    onToggleFavorite = onToggleFavorite,
-                    onOpenDetails = onOpenDetails,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
-            }
+        if (state.items.isEmpty()) {
+            CatalogListEmpty(
+                onResetFilters = { onQueryChanged("") }
+            )
+        } else {
+            CatalogListNotEmpty(
+                state = state,
+                onToggleFavorite = onToggleFavorite,
+                onOpenDetails = onOpenDetails,
+            )
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.ErrorMessage
@@ -22,7 +23,7 @@ internal fun CatalogScreen(
 ) {
     when (state) {
         is CatalogViewState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
@@ -42,10 +43,8 @@ internal fun CatalogScreen(
                 onQueryChanged = onQueryChanged,
                 onToggleFavorite = onToggleFavorite,
                 onOpenDetails = onOpenDetails,
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
 }
-
