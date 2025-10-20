@@ -15,13 +15,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.mikhalchenkov.isxcatalogviewer.core.ui.LocalAppSnackbarHostState
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.api.CatalogDetailsApi
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.api.CatalogListApi
@@ -41,10 +40,8 @@ internal fun HomeScreen(
     ) { paddingValues ->
         val modifier = Modifier.padding(paddingValues)
         val configuration = LocalConfiguration.current
-        var id by remember { mutableStateOf<String?>(null) }
-
-        val onOpenDetails: (String) -> Unit = remember { { selectedId -> id = selectedId } }
-        val onCloseDetails: () -> Unit = remember { { id = null } }
+        val viewModel = hiltViewModel<HomeViewModel>()
+        val id = viewModel.state.collectAsStateWithLifecycle().value.id
 
         CompositionLocalProvider(LocalAppSnackbarHostState provides snackbarHostState) {
             when (configuration.orientation) {
@@ -53,8 +50,8 @@ internal fun HomeScreen(
                         id = id,
                         catalogFeature = catalogFeature,
                         catalogDetailsApi = catalogDetailsApi,
-                        onOpenDetails = onOpenDetails,
-                        onCloseDetails = onCloseDetails,
+                        onOpenDetails = viewModel::setId,
+                        onCloseDetails = viewModel::clearId,
                         modifier = modifier
                     )
                 }
@@ -64,8 +61,8 @@ internal fun HomeScreen(
                         id = id,
                         catalogFeature = catalogFeature,
                         catalogDetailsApi = catalogDetailsApi,
-                        onOpenDetails = onOpenDetails,
-                        onCloseDetails = onCloseDetails,
+                        onOpenDetails = viewModel::setId,
+                        onCloseDetails = viewModel::clearId,
                         modifier = modifier
                     )
                 }
