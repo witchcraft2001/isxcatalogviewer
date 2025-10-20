@@ -12,6 +12,20 @@ An Android application for viewing and managing catalog items with favorites fun
 ## Tech Stack
 
 ### Architecture & Design Patterns
+
+The architecture of this application prioritizes modularity, testability, and scalability through 
+Clean Architecture principles and feature-based module separation. 
+Each feature is split into API and implementation modules, which enforces strict dependency 
+boundaries and enables true modular development.
+
+The decision to use MVVM with Clean Architecture creates clear separation between UI logic
+(ViewModel), business logic (Use Cases in domain layer), and data access (Repositories in 
+data layer). This layered approach makes the codebase highly testable-each layer can be unit 
+tested independently with mocked dependencies - and ensures that business logic remains 
+framework-agnostic. The trade-off is increased boilerplate: simple features require multiple 
+classes across different layers. However, this upfront investment pays off in maintainability 
+and scalability as the app grows.
+
 - **Clean Architecture** - Multi-module architecture with separation of concerns
 - **MVVM** - Model-View-ViewModel pattern for presentation layer
 - **Dependency Injection** - Hilt/Dagger for dependency management
