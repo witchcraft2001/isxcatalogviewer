@@ -10,22 +10,12 @@ import javax.inject.Inject
 
 class CatalogRepositoryImpl @Inject constructor(
     private val catalogDataSource: CatalogDataSource
+
 ) : CatalogRepository {
-    override fun getAll(): Flow<Result<List<CatalogItem>>> = flow {
-        try {
-            emit(Result.success(catalogDataSource.getCatalog().items.map { it.toDomain() }))
-        } catch (e: Exception) {
-            emit(Result.failure(e))
-        }
+    override fun getAll(): Flow<List<CatalogItem>> = flow {
+        emit(catalogDataSource.getCatalog().items.map { it.toDomain() })
     }
 
-    override suspend fun findById(id: String): Result<CatalogItem?> {
-        return try {
-            val result =
-                catalogDataSource.getCatalog().items.firstOrNull { it.id == id }?.toDomain()
-            Result.success(result)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
+    override suspend fun findById(id: String): CatalogItem? =
+        catalogDataSource.getCatalog().items.firstOrNull { it.id == id }?.toDomain()
 }

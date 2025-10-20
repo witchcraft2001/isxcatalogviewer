@@ -23,11 +23,11 @@ import org.junit.Test
 class GetCatalogItemsUseCaseTest {
     private val catalogRepository = mockk<CatalogRepository>(relaxed = true)
     private val favoriteRepository = mockk<FavoriteRepository>(relaxed = true)
-    private lateinit var useCase: GetCatalogItemsUseCase
+    private lateinit var useCase: ObserveCatalogItemsUseCase
 
     @Before
     fun setUp() {
-        useCase = GetCatalogItemsUseCase(catalogRepository, favoriteRepository)
+        useCase = ObserveCatalogItemsUseCase(catalogRepository, favoriteRepository)
     }
 
     @After
