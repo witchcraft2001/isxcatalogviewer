@@ -1,6 +1,6 @@
 package dev.mikhalchenkov.isxcatalogviewer.core.data.repositories
 
-import dev.mikhalchenkov.isxcatalogviewer.core.data.datasources.CatalogDataSource
+import dev.mikhalchenkov.isxcatalogviewer.core.data.datasources.CatalogDataSourceImpl
 import dev.mikhalchenkov.isxcatalogviewer.core.data.mappers.CatalogItemDtoMapper.toDomain
 import dev.mikhalchenkov.isxcatalogviewer.core.data.models.CatalogItemDto
 import dev.mikhalchenkov.isxcatalogviewer.core.data.models.CatalogResponseDto
@@ -22,7 +22,7 @@ import org.junit.Test
 import java.io.IOException
 
 class CatalogRepositoryImplTest {
-    private val dataSource = mockk<CatalogDataSource>(relaxed = true)
+    private val dataSource = mockk<CatalogDataSourceImpl>(relaxed = true)
     private lateinit var repository: CatalogRepository
 
     @Before

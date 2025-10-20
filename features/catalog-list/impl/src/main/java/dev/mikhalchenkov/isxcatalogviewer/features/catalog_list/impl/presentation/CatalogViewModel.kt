@@ -8,10 +8,9 @@ import dev.mikhalchenkov.isxcatalogviewer.domain.usecases.ToggleFavoriteUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.domain.usecases.GetCatalogItemsUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.mappers.toUi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,7 +46,7 @@ internal class CatalogViewModel @Inject constructor(
                         _state.value = CatalogViewState.Error()
                     }
                 )
-            }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
+            }.collect()
         }
     }
 
