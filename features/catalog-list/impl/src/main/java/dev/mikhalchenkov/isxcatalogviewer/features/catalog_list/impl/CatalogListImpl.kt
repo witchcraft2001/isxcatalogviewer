@@ -9,7 +9,7 @@ import dev.mikhalchenkov.isxcatalogviewer.core.ui.LocalAppSnackbarHostState
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.api.CatalogListApi
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.CatalogScreen
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.CatalogViewModel
-import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.UiEvent
+import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.impl.presentation.CatalogEvent
 import javax.inject.Inject
 
 class CatalogListImpl @Inject constructor() : CatalogListApi {
@@ -24,7 +24,7 @@ class CatalogListImpl @Inject constructor() : CatalogListApi {
             if (snackbarHostState == null) return@LaunchedEffect
             viewModel.events.collect { event ->
                 when (event) {
-                    is UiEvent.ShowMessage -> snackbarHostState.showSnackbar(event.text)
+                    is CatalogEvent.ShowMessage -> snackbarHostState.showSnackbar(event.text)
                 }
             }
         }

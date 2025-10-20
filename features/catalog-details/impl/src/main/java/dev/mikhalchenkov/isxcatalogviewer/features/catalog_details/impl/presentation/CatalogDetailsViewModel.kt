@@ -7,8 +7,10 @@ import dev.mikhalchenkov.isxcatalogviewer.core.common.di.AsyncResult
 import dev.mikhalchenkov.isxcatalogviewer.domain.usecases.ToggleFavoriteUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.domain.GetCatalogItemByIdUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.mappers.toUi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,13 +23,17 @@ internal class CatalogDetailsViewModel @Inject constructor(
     private val _state = MutableStateFlow<CatalogDetailsState>(CatalogDetailsState.Loading)
     val state = _state.asStateFlow()
 
+    private val _events = Channel<CatalogDetailEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
+
     fun loadItem(id: String) {
         viewModelScope.launch {
             getCatalogItemByIdUseCase(id).collect { result ->
-                _state.value = when(result){
+                _state.value = when (result) {
                     is AsyncResult.Loading -> {
                         CatalogDetailsState.Loading
                     }
+
                     is AsyncResult.Success -> {
                         val item = result.value
                         if (item != null) {
@@ -36,6 +42,7 @@ internal class CatalogDetailsViewModel @Inject constructor(
                             CatalogDetailsState.NotFound
                         }
                     }
+
                     is AsyncResult.Error -> {
                         CatalogDetailsState.Error()
                     }
@@ -45,11 +52,17 @@ internal class CatalogDetailsViewModel @Inject constructor(
     }
 
     fun onToggleFavorite(itemId: String) {
+        // todo: add ResourceManager to viewmodel to get string from resources
         viewModelScope.launch {
             try {
                 toggleFavoriteUseCase(itemId)
+                _events.send(CatalogDetailEvent.ShowMessage("Favorite status updated"))
             } catch (e: Exception) {
-                _state.value = CatalogDetailsState.Error()
+                _events.send(
+                    CatalogDetailEvent.ShowMessage(
+                        e.message ?: "Unable to update favorite status"
+                    )
+                )
             }
         }
     }

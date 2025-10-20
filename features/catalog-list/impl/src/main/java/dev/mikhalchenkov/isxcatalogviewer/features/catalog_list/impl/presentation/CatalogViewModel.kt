@@ -48,7 +48,7 @@ internal class CatalogViewModel @Inject constructor(
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogViewState.Loading)
 
-    private val _events = Channel<UiEvent>(Channel.BUFFERED)
+    private val _events = Channel<CatalogEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
     fun retry() {
@@ -60,13 +60,17 @@ internal class CatalogViewModel @Inject constructor(
     }
 
     fun onToggleFavorite(itemId: String) {
+        // todo: add ResourceManager to viewmodel to get string from resources
         viewModelScope.launch {
             try {
                 toggleFavoriteUseCase(itemId)
-                _events.send(UiEvent.ShowMessage("Favorite status updated"))
+                _events.send(CatalogEvent.ShowMessage("Favorite status updated"))
             } catch (e: Exception) {
-                // todo: add ResourceManager to viewmodel to get string from resources
-                _events.send(UiEvent.ShowMessage(e.message ?: "Unable to update favorite status"))
+                _events.send(
+                    CatalogEvent.ShowMessage(
+                        e.message ?: "Unable to update favorite status"
+                    )
+                )
             }
         }
     }
