@@ -1,5 +1,6 @@
 package dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl
 
+import dev.mikhalchenkov.isxcatalogviewer.core.common.di.AsyncResult
 import dev.mikhalchenkov.isxcatalogviewer.domain.entities.CatalogItemFavorite
 import dev.mikhalchenkov.isxcatalogviewer.domain.usecases.ToggleFavoriteUseCase
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.impl.domain.GetCatalogItemByIdUseCase
@@ -77,7 +78,7 @@ internal class CatalogDetailsViewModelTest {
             isFavorite = false
         )
 
-        every { getCatalogItemByIdUseCase(itemId) } returns flowOf(Result.success(catalogItem))
+        every { getCatalogItemByIdUseCase(itemId) } returns flowOf(AsyncResult.Success(catalogItem))
 
         // When
         viewModel.loadItem(itemId)
@@ -120,8 +121,8 @@ internal class CatalogDetailsViewModelTest {
         )
 
         every { getCatalogItemByIdUseCase(itemId) } returns flow {
-            emit(Result.success(firstItem))
-            emit(Result.success(secondItem))
+            emit(AsyncResult.Success(firstItem))
+            emit(AsyncResult.Success(secondItem))
         }
 
         // When
@@ -144,7 +145,7 @@ internal class CatalogDetailsViewModelTest {
     fun `loadItem should emit NotFound state when item is null`() = runTest {
         // Given
         val itemId = "123"
-        every { getCatalogItemByIdUseCase(itemId) } returns flowOf(Result.success(null))
+        every { getCatalogItemByIdUseCase(itemId) } returns flowOf(AsyncResult.Success(null))
 
         // When
         viewModel.loadItem(itemId)
@@ -160,7 +161,7 @@ internal class CatalogDetailsViewModelTest {
         // Given
         val itemId = "123"
         val exception = Exception("Failed to load item")
-        every { getCatalogItemByIdUseCase(itemId) } returns flowOf(Result.failure(exception))
+        every { getCatalogItemByIdUseCase(itemId) } returns flowOf(AsyncResult.Error(exception))
 
         // When
         viewModel.loadItem(itemId)
@@ -216,8 +217,8 @@ internal class CatalogDetailsViewModelTest {
         )
 
         every { getCatalogItemByIdUseCase(itemId) } returnsMany listOf(
-            flowOf(Result.failure(Exception("Network error"))),
-            flowOf(Result.success(catalogItem))
+            flowOf(AsyncResult.Error(Exception("Network error"))),
+            flowOf(AsyncResult.Success(catalogItem))
         )
 
         // When
