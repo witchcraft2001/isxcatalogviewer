@@ -4,7 +4,12 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -39,6 +44,10 @@ internal fun HomeScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
         val modifier = Modifier.padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .imePadding()
+
         val configuration = LocalConfiguration.current
         val viewModel = hiltViewModel<HomeViewModel>()
         val id = viewModel.state.collectAsStateWithLifecycle().value.id
