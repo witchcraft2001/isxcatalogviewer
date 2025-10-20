@@ -63,6 +63,7 @@ internal class CatalogViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 toggleFavoriteUseCase(itemId)
+                _events.send(UiEvent.ShowMessage("Favorite status updated"))
             } catch (e: Exception) {
                 // todo: add ResourceManager to viewmodel to get string from resources
                 _events.send(UiEvent.ShowMessage(e.message ?: "Unable to update favorite status"))

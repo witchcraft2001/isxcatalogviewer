@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import dev.mikhalchenkov.isxcatalogviewer.core.ui.LocalAppSnackbarHostState
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_details.api.CatalogDetailsApi
 import dev.mikhalchenkov.isxcatalogviewer.features.catalog_list.api.CatalogListApi
 import dev.mikhalchenkov.isxcatalogviewer.features.home.impl.R
@@ -29,8 +33,11 @@ internal fun HomeScreen(
     catalogFeature: CatalogListApi,
     catalogDetailsApi: CatalogDetailsApi,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.application_name)) }) }
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.application_name)) }) },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
         val modifier = Modifier.padding(paddingValues)
         val configuration = LocalConfiguration.current
@@ -39,27 +46,29 @@ internal fun HomeScreen(
         val onOpenDetails: (String) -> Unit = remember { { selectedId -> id = selectedId } }
         val onCloseDetails: () -> Unit = remember { { id = null } }
 
-        when (configuration.orientation) {
-            Configuration.ORIENTATION_PORTRAIT -> {
-                PortraitLayout(
-                    id = id,
-                    catalogFeature = catalogFeature,
-                    catalogDetailsApi = catalogDetailsApi,
-                    onOpenDetails = onOpenDetails,
-                    onCloseDetails = onCloseDetails,
-                    modifier = modifier
-                )
-            }
+        CompositionLocalProvider(LocalAppSnackbarHostState provides snackbarHostState) {
+            when (configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    PortraitLayout(
+                        id = id,
+                        catalogFeature = catalogFeature,
+                        catalogDetailsApi = catalogDetailsApi,
+                        onOpenDetails = onOpenDetails,
+                        onCloseDetails = onCloseDetails,
+                        modifier = modifier
+                    )
+                }
 
-            else -> {
-                LandscapeLayout(
-                    id = id,
-                    catalogFeature = catalogFeature,
-                    catalogDetailsApi = catalogDetailsApi,
-                    onOpenDetails = onOpenDetails,
-                    onCloseDetails = onCloseDetails,
-                    modifier = modifier
-                )
+                else -> {
+                    LandscapeLayout(
+                        id = id,
+                        catalogFeature = catalogFeature,
+                        catalogDetailsApi = catalogDetailsApi,
+                        onOpenDetails = onOpenDetails,
+                        onCloseDetails = onCloseDetails,
+                        modifier = modifier
+                    )
+                }
             }
         }
     }
