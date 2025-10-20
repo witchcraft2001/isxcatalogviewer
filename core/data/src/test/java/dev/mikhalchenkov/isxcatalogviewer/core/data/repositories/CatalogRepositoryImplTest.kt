@@ -4,19 +4,17 @@ import dev.mikhalchenkov.isxcatalogviewer.core.data.datasources.CatalogDataSourc
 import dev.mikhalchenkov.isxcatalogviewer.core.data.mappers.CatalogItemDtoMapper.toDomain
 import dev.mikhalchenkov.isxcatalogviewer.core.data.models.CatalogItemDto
 import dev.mikhalchenkov.isxcatalogviewer.core.data.models.CatalogResponseDto
-import dev.mikhalchenkov.isxcatalogviewer.domain.entities.CatalogItem
 import dev.mikhalchenkov.isxcatalogviewer.domain.repositories.CatalogRepository
-import kotlinx.coroutines.test.runTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
-import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
@@ -49,28 +47,10 @@ class CatalogRepositoryImplTest {
         val expected = dtoItems.map { it.toDomain() }
 
         // when
-        val emissions = mutableListOf<Result<List<CatalogItem>>>()
-        repository.getAll().toList(emissions)
+        val actual = repository.getAll().first()
 
         // then
-        assertEquals(1, emissions.size)
-        val result = emissions.first()
-        assertTrue(result.isSuccess)
-        assertEquals(expected, result.getOrNull())
-        coVerify(exactly = 1) { dataSource.getCatalog() }
-    }
-
-    @Test
-    fun `getAll emits failure when dataSource throws`() = runTest {
-        // given
-        coEvery { dataSource.getCatalog() } throws IOException("boom")
-
-        // when
-        val first = repository.getAll().first()
-
-        // then
-        assertTrue(first.isFailure)
-        assertTrue(first.exceptionOrNull() is IOException)
+        assertEquals(expected, actual)
         coVerify(exactly = 1) { dataSource.getCatalog() }
     }
 
@@ -92,8 +72,7 @@ class CatalogRepositoryImplTest {
         val result = repository.findById("bk_004")
 
         // then
-        assertTrue(result.isSuccess)
-        assertEquals(target.toDomain(), result.getOrNull())
+        assertEquals(target.toDomain(), result)
         coVerify(exactly = 1) { dataSource.getCatalog() }
     }
 
@@ -113,22 +92,39 @@ class CatalogRepositoryImplTest {
         val result = repository.findById("missing_id")
 
         // then
-        assertTrue(result.isSuccess)
-        assertNull(result.getOrNull())
+        assertNull(result)
         coVerify(exactly = 1) { dataSource.getCatalog() }
     }
 
     @Test
-    fun `findById returns failure when dataSource throws`() = runTest {
+    fun `getAll throws when dataSource throws`() = runTest {
+        // given
+        coEvery { dataSource.getCatalog() } throws IOException("boom")
+
+        // then
+        try {
+            repository.getAll().first()   // suspend — можно вызывать в runTest
+            fail("Expected IOException to be thrown")
+        } catch (e: IOException) {
+            // ok
+        }
+
+        coVerify(exactly = 1) { dataSource.getCatalog() }
+    }
+
+    @Test
+    fun `findById throws when dataSource throws`() = runTest {
         // given
         coEvery { dataSource.getCatalog() } throws IllegalStateException("bad data")
 
-        // when
-        val result = repository.findById("any")
-
         // then
-        assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is IllegalStateException)
+        try {
+            repository.findById("any")    // suspend
+            fail("Expected IllegalStateException to be thrown")
+        } catch (e: IllegalStateException) {
+            // ok
+        }
+
         coVerify(exactly = 1) { dataSource.getCatalog() }
     }
 }
