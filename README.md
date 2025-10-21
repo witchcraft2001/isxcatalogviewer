@@ -18,7 +18,7 @@ Clean Architecture principles and feature-based module separation.
 Each feature is split into API and implementation modules, which enforces strict dependency 
 boundaries and enables true modular development.
 
-The decision to use MVVM with Clean Architecture creates clear separation between UI logic
+The decision to use MVVM with Clean Architecture creates a clear separation between UI logic
 (ViewModel), business logic (Use Cases in domain layer), and data access (Repositories in 
 data layer). This layered approach makes the codebase highly testable-each layer can be unit 
 tested independently with mocked dependencies - and ensures that business logic remains 
@@ -26,7 +26,9 @@ framework-agnostic. The trade-off is increased boilerplate: simple features requ
 classes across different layers. However, this upfront investment pays off in maintainability 
 and scalability as the app grows.
 
-- **Clean Architecture** - Multi-module architecture with separation of concerns
+- **Declarative UI** - Jetpack Compose for describing the user interface
+- **Multi-module** - Feature-based multi-module architecture with API/Implementation separation 
+and Clean Architecture with separation of concerns
 - **MVVM** - Model-View-ViewModel pattern for presentation layer
 - **Dependency Injection** - Hilt/Dagger for dependency management
 
@@ -52,7 +54,7 @@ Each feature is split into API and implementation modules following the principl
 
 #### Catalog Details Feature
 - **`:features:catalog-details:api`** - Public API and contracts
-- **`:features:catalog-details:impl`** - Implementation of catalog details and favorites
+- **`:features:catalog-details:impl`** - Implementation of catalog details functionality
 
 #### Home Feature
 - **`:features:home:api`** - Public API and contracts
